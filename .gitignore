@@ -242,3 +242,6 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.toptal.com/developers/gitignore/api/go,macos,windows,linux,node
+
+# Don't include our binary
+lenslocked.com
