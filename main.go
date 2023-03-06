@@ -28,11 +28,17 @@ func contact(w http.ResponseWriter, r *http.Request) {
 
 func main() {
     var err error
-    homeTemplate, err = template.ParseFiles("views/home.html")
+    homeTemplate, err = template.ParseFiles(
+        "views/home.html",
+        "views/layouts/footer.html",
+    )
     if err != nil {
         panic(err)
     }
-    contactTemplate, err = template.ParseFiles("views/contact.html")
+    contactTemplate, err = template.ParseFiles(
+        "views/contact.html",
+        "views/layouts/footer.html",
+    )
     if err != nil {
         panic(err)
     }
