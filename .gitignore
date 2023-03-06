@@ -248,3 +248,4 @@ lenslocked.com
 
 # Don't include tmp directory
 /tmp
+/exp
