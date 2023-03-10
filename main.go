@@ -4,13 +4,13 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/lukeorth/lenslocked.com/controllers"
 	"github.com/lukeorth/lenslocked.com/views"
 )
 
 var (
     homeView *views.View
     contactView *views.View
-    signupView *views.View
 )
 
 func home(w http.ResponseWriter, r *http.Request) {
@@ -23,20 +23,15 @@ func contact(w http.ResponseWriter, r *http.Request) {
     must(contactView.Render(w, nil))
 }
 
-func signup(w http.ResponseWriter, r *http.Request) {
-    w.Header().Set("Content-Type", "text/html")
-    must(signupView.Render(w, nil))
-}
-
 func main() {
     homeView = views.NewView("bootstrap", "views/home.html")
     contactView = views.NewView("bootstrap", "views/contact.html")
-    signupView = views.NewView("bootstrap", "views/signup.html")
+    usersC := controllers.NewUsers()
 
     r := mux.NewRouter()
     r.HandleFunc("/", home)
     r.HandleFunc("/contact", contact)
-    r.HandleFunc("/signup", signup)
+    r.HandleFunc("/signup", usersC.New)
     must(http.ListenAndServe(":3000", r))
 }
 
