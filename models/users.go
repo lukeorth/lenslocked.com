@@ -50,6 +50,12 @@ func (us *UserService) ByID(id uint) (*User, error) {
     }
 }
 
+// Create will create the provided user and backfill data
+// like the ID, CreatedAt, and UpdatedAt fields.
+func (us *UserService) Create(user *User) error {
+    return us.db.Create(user).Error
+}
+
 // DestructiveReset drops the user table and rebuilds it
 func (us *UserService) DestructiveReset() {
     us.db.Migrator().DropTable(&User{})
