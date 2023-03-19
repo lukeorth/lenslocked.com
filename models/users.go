@@ -98,9 +98,20 @@ func (us *UserService) Delete(id uint) error {
 }
 
 // DestructiveReset drops the user table and rebuilds it
-func (us *UserService) DestructiveReset() {
-    us.db.Migrator().DropTable(&User{})
-    us.db.AutoMigrate(&User{})
+func (us *UserService) DestructiveReset() error {
+    if err := us.db.Migrator().DropTable(&User{}); err != nil {
+        return err
+    }
+    return us.AutoMigrate()
+}
+
+// AutoMigrate will attempt to automatically migrate the
+// users table
+func (us *UserService) AutoMigrate() error {
+    if err := us.db.Migrator().AutoMigrate(&User{}); err != nil {
+        return err
+    }
+    return nil
 }
 
 type User struct {
