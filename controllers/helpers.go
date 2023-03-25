@@ -1,9 +1,9 @@
 package controllers
 
 import (
-    "net/http"
+	"net/http"
 
-    "github.com/gorilla/schema"
+	"github.com/gorilla/schema"
 )
 
 func parseForm(r *http.Request, dst interface{}) error {
