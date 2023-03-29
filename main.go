@@ -24,7 +24,7 @@ func main() {
     }
     must(err)
     // TODO: Fix this
-    // us.AutoMigrate()
+    services.AutoMigrate()
 
     staticC := controllers.NewStatic()
     usersC := controllers.NewUsers(services.User)
