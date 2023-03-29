@@ -6,11 +6,13 @@ import (
 )
 
 func NewServices(connectionInfo string) (*Services, error) {
-    _, err := gorm.Open(postgres.Open(connectionInfo))
+    db, err := gorm.Open(postgres.Open(connectionInfo))
     if err != nil {
         return nil, err
     }
-    return &Services{}, nil
+    return &Services{
+        User: NewUserService(db),
+    }, nil
 }
 
 type Services struct {
