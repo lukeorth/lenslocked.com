@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/lukeorth/lenslocked.com/context"
 	"github.com/lukeorth/lenslocked.com/models"
 	"github.com/lukeorth/lenslocked.com/views"
 )
@@ -35,8 +36,15 @@ func (g *Galleries) Create(w http.ResponseWriter, r *http.Request) {
         g.New.Render(w, vd)
         return
     }
+    user := context.User(r.Context())
+    if user == nil {
+        http.Redirect(w, r, "/login", http.StatusFound)
+        return
+    }
+    fmt.Println("Create got the user:", user)
     gallery := models.Gallery{
         Title: form.Title,
+        UserID: user.ID,
     }
     if err := g.gs.Create(&gallery); err != nil {
         vd.SetAlert(err)
