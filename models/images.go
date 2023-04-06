@@ -3,9 +3,10 @@ package models
 import (
 	"fmt"
 	"io"
+	"net/url"
 	"os"
 	"path/filepath"
-    "strings"
+	"strings"
 )
 
 // Image is NOT stored in the database
@@ -15,7 +16,10 @@ type Image struct {
 }
 
 func (i *Image) Path() string {
-    return "/" + i.RelativePath()
+    temp := url.URL{
+        Path: "/" + i.RelativePath(),
+    }
+    return temp.String()
 }
 
 func (i *Image) RelativePath() string {
