@@ -4,10 +4,12 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/gorilla/csrf"
 	"github.com/gorilla/mux"
 	"github.com/lukeorth/lenslocked.com/controllers"
 	"github.com/lukeorth/lenslocked.com/middleware"
 	"github.com/lukeorth/lenslocked.com/models"
+	"github.com/lukeorth/lenslocked.com/rand"
 )
 
 const (
@@ -24,7 +26,6 @@ func main() {
         panic(err)
     }
     must(err)
-    // TODO: Fix this
     services.AutoMigrate()
 
     r := mux.NewRouter()
@@ -32,6 +33,11 @@ func main() {
     usersC := controllers.NewUsers(services.User)
     galleriesC := controllers.NewGalleries(services.Gallery, services.Image, r)
 
+    // TODO: Update this to be a config variable
+    isProd := false
+    b, err := rand.Bytes(32)
+    must(err)
+    csrfMw := csrf.Protect(b, csrf.Secure(isProd))
     userMw := middleware.User{
         UserService: services.User,
     }
@@ -69,7 +75,7 @@ func main() {
     r.HandleFunc("/galleries/{id:[0-9]+}/images/{filename}/delete", requireUserMw.ApplyFn(galleriesC.ImageDelete)).Methods("POST")
     r.HandleFunc("/galleries/{id:[0-9]+}", galleriesC.Show).Methods("GET").Name(controllers.ShowGallery)
 
-    must(http.ListenAndServe(":3000", userMw.Apply(r)))
+    must(http.ListenAndServe(":3000", csrfMw(userMw.Apply(r))))
 }
 
 func must(err error) {
